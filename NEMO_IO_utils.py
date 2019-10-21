@@ -234,10 +234,8 @@ def write_domcfg(fileout, ln_zco, ln_zps, ln_sco, ln_isfcav, jperio, bat,
     ge3uw = dataset.createVariable('e3uw_0', np.float64, ('z', 'y', 'x'))
     ge3vw = dataset.createVariable('e3vw_0', np.float64, ('z', 'y', 'x'))
 
-    nav_lat.units = 'km'
-    nav_lon.units = 'km'
-    nav_lat.long_name = 'Y'
-    nav_lon.long_name = 'X'
+    nav_lon.units, nav_lon.long_name = 'km', 'X'
+    nav_lat.units, nav_lat.long_name = 'km', 'Y'
 
     # Populate file with input data 
     giglo[:] = nx
