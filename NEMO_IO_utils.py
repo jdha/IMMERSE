@@ -146,11 +146,11 @@ def write_coord(fileout, lont, latt, lonu, latu, lonv, latv, lonf, latf,
     # Close off pointer
     dataset.close()
 
-def write_dom(fileout, ln_zco, ln_zps, ln_sco, ln_isfcav, jperio, bat, 
-              lont, latt, lonu, latu, lonv, latv, lonf, latf,
-              e1t, e2t, e1u, e2u, e1v, e2v, e1f, e2f, ff_f, ff_t,
-              dept_1d, e3t_1d, e3w_1d, e3t, e3u, e3v, e3f, e3w, e3uw, e3vw,
-              ktop, kbot):
+def write_domcfg(fileout, ln_zco, ln_zps, ln_sco, ln_isfcav, jperio, bat, 
+                 lont, latt, lonu, latu, lonv, latv, lonf, latf,
+                 e1t, e2t, e1u, e2u, e1v, e2v, e1f, e2f, ff_f, ff_t,
+                 dept_1d, e3t_1d, e3w_1d, e3t, e3u, e3v, e3f, e3w, e3uw, e3vw,
+                 ktop, kbot):
     ''' 
     Writes out a NEMO formatted domcfg file.
     
