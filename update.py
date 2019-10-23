@@ -1,33 +1,36 @@
 import numpy as np
 
 def nst_update(tab_src, tab_dst, iraf, jraf, imin, jmin, imax, jmax, nghost, child):
-    # This update a T-point parent array strictly inside child domain
-    # (Cell average)
-    # (Works for any kind of refinement)
-    i0st = nghost + imin  # First Parent point inside zoom
+    # This update a T-point child/parent array strictly inside child domain
+    # (Cell average, for any kind of refinement)
+    i0st = nghost + imin  # first parent point inside zoom
     j0st = nghost + jmin
-    i0end = nghost + imax  # Last Parent point inside zoom
-    j0end = nghost + jmax
+    i0en = nghost + imax  # last parent point inside zoom
+    j0en = nghost + jmax
 
-    ip = np.arange(i0st, i0end)
-    jp = np.arange(j0st, j0end)
+    # Initial indices for parent
+    ip, jp = np.arange(i0st, i0en), np.arange(j0st, j0en)
     
-    ic = nghost + (ip-i0st)*iraf + 1
-    jc = nghost + (jp-j0st)*jraf + 1
+    # Offset indices for child grid
+    i_os = np.tile(np.arange(0, iraf)[:,None]  , (1, jraf)).flatten()
+    j_os = np.tile(np.arange(0, jraf)[:,None].T, (iraf, 1)).flatten()
     
-    for i in np.arange(iraf):
-        for j in np.arange(jraf):
-            
+    # Indices for child
+    ic, jc = np.meshgrid(nghost + (ip-i0st)*iraf + 1, 
+                         nghost + (jp-j0st)*jraf + 1)
+    ic = np.tile(ic.flatten()[:, None], (1, iraf*jraf)) + i_os
+    jc = np.tile(jc.flatten()[:, None], (1, iraf*jraf)) + j_os
     
-        ici = nghost + (ip-i0st)*iraf + 1
-        ics = ici + iraf
-        for jp in range(j0st, j0end):
-            jci = nghost + (jp-j0st)*jraf + 1
-            jcs = jci + jraf
-            if child:
-                tab_dst[ic+i, jc+j] = tab_src[ip, jp] # update child
-            else:
-                tab_dst[ip, jp] = np.average(tab_src[ici:ics, jci:jcs]) # update parent
+    # Final indices for parent
+    ip, jp = np.meshgrid(ip, jp)
+
+    # Update child/parent
+    if child:
+        ip = np.tile(ip.flatten()[:, None], (1, iraf*jraf))
+        jp = np.tile(jp.flatten()[:, None], (1, iraf*jraf))
+        tab_dst[ic, jc] = tab_src[ip, jp] # update child
+    else:
+        tab_dst[ip, jp] = np.mean(tab_src[ic, jc], axis=1) # update parent
             
     return tab_dst
 
@@ -61,8 +64,8 @@ def update_child_from_parent2(tabp, tabc, iraf, jraf, imin, jmin, imax, jmax, ng
         upd[:,j0end-nmatch+1:]=1
 
         
-    ishift = np.int(np.ceil(np.float(nghost + 1)/np.float(iraf)))
-    jshift = np.int(np.ceil(np.float(nghost + 1)/np.float(jraf)))
+    ishift = np.int(np.ceil((nghost + 1)/np.float(iraf)))
+    jshift = np.int(np.ceil((nghost + 1)/np.float(jraf)))
     if iraf==1: ishift = 0
     if jraf==1: jshift = 0
 

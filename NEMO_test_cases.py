@@ -34,9 +34,9 @@ import seaborn as sns
 from matplotlib.colors import LightSource
 sns.set(color_codes=True)
 
-class IceCav(object):
+class TestConfig(object):
     """
-    A Grid object that stores the information used in constructing a idealised
+    An object that stores the information used in constructing a idealised
     NEMO configuration (with or without an AGRIF zoom)
     """
     def __init__(self, zco=False, zps=False, sco=False, isfcav=False):
@@ -49,28 +49,33 @@ class IceCav(object):
 
         """
 
-# Define Child here:
-zoom_ist = 10
-zoom_iend = 40
-zoom_jst = 1
-zoom_jend = 2
-iraf = 3
-jraf = 1
+
+
 
 
 nmatch = 2
+        # Parent
         self.zco          = zco
         self.zps          = zps
         self.sco          = sco 
         self.isfcav       = isfcav
+        # AGRIF
         self.1_zco        = False
         self.1_zps        = False
         self.1_sco        = False 
         self.1_isfcav     = False
-        
-        self.bmatch       = True
-        self.nghost       = 3
+        self.zoom_ist     = None
+        self.zoom_ien     = None
+        self.zoom_jst     = None
+        self.zoom_jen     = None
+        # General
+        self.bmatch       = True    #TODO: check this is ok as default
+        self.nghost       = 3       #TODO: check this is ok as default
 
+    def set_config(self, cfg):
+        
+        
+    def set_agrif(self, iraf, jraf)
         
     def _calc_rmax(dept):
         ''' 
@@ -100,6 +105,20 @@ nmatch = 2
         rmax = np.maximum(np.abs(rmax_x), np.abs(rmax_y))
         
         return rmax
+    
+    def _calc_stiff(dept):
+        ''' 
+    
+        Args:
+            zt    (np.ndarray): depth array at t-points (m)
+            
+        Returns:
+            sf    (np.ndarray): stiffness factor array at t-points (m)
+        '''
+
+        sf = 
+        
+        return sf
     
     def channel(lx = 390., ly = 294., dx = 6., dy = 6., stiff = 1, H0 = 4500.):
         ''' 
@@ -135,6 +154,12 @@ nmatch = 2
         zt = np.ma.array(H0*(1. - 0.9*np.exp(-(stiff/40.**2 * ((x-lx/2.)**2 
                                       + (y-ly/2.)**2)))), mask=False)
         rm = np.ma.array(_calc_rmax(zt), mask=False)
+        
+        # Predfine default zoom incase AGRIF activated
+        self.zoom_ist = 10
+        self.zoom_ien = 40
+        self.zoom_jst = 1
+        self.zoom_jen = 2
         
         return x, y, zt, rm
     
